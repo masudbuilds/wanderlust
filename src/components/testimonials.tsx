@@ -27,6 +27,11 @@ const testimonials = [
 ];
 
 export function Testimonials() {
+  // Two slides at 50% width fill the viewport exactly, leaving embla no
+  // scroll room (loop also needs >= 3 slides) — repeat the list to give
+  // the carousel content to page through.
+  const slides = [...testimonials, ...testimonials];
+
   return (
     <section className="px-6 py-16 md:px-10 md:py-24">
       <Carousel
@@ -50,8 +55,8 @@ export function Testimonials() {
         </div>
 
         <CarouselContent className="mt-10">
-          {testimonials.map((t) => (
-            <CarouselItem key={t.name} className="sm:basis-1/2">
+          {slides.map((t, i) => (
+            <CarouselItem key={`${t.name}-${i}`} className="sm:basis-1/2">
               <article className="flex h-full gap-4 border border-border bg-white p-3">
                 <div className="flex min-w-0 flex-1 flex-col p-3">
                   <p className="text-[15px] leading-snug text-foreground">
