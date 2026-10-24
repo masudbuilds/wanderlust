@@ -23,7 +23,7 @@ export function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <header className="relative bg-white">
+    <header className="sticky top-0 z-40 bg-white">
       <nav className="mx-auto grid h-17.5 w-full max-w-7xl grid-cols-[1fr_auto_1fr] items-center px-6 md:px-10">
         {/* Left nav / mobile menu toggle */}
         <ul className="hidden items-center gap-9 justify-self-start lg:flex">
