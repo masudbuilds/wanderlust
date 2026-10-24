@@ -1,5 +1,7 @@
 import { Navbar } from "@/components/navbar";
 import { Banner } from "@/components/banner";
+import { Features } from "@/components/features";
+import { Testimonials } from "@/components/testimonials";
 
 export default function Home() {
   return (
@@ -7,6 +9,8 @@ export default function Home() {
       <Navbar />
       <main>
         <Banner />
+        <Features />
+        <Testimonials />
       </main>
     </>
   );

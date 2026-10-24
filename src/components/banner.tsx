@@ -1,11 +1,5 @@
 import Image from "next/image";
-import { Playfair_Display } from "next/font/google";
 import { ArrowRight } from "lucide-react";
-
-const playfair = Playfair_Display({
-  subsets: ["latin"],
-  variable: "--font-playfair",
-});
 
 const searchFields = [
   { label: "Location", placeholder: "Address, City Or Zip", type: "text" },
@@ -16,9 +10,7 @@ const searchFields = [
 
 export function Banner() {
   return (
-    <section
-      className={`${playfair.variable} relative flex min-h-[calc(100svh-4.375rem)] flex-col`}
-    >
+    <section className="relative flex min-h-[calc(100svh-4.375rem)] flex-col">
       <Image
         src="/images/Banner.png"
         alt="Aerial view of a coastal bay surrounded by lush forest"
@@ -29,7 +21,7 @@ export function Banner() {
       />
 
       <div className="relative z-10 flex flex-1 flex-col items-center justify-center px-4 py-20 text-white">
-        <h1 className="text-center font-[family-name:var(--font-playfair)] text-5xl leading-[1.1] font-medium sm:text-6xl md:text-7xl xl:text-8xl">
+        <h1 className="font-display text-center text-5xl leading-[1.1] font-medium sm:text-6xl md:text-7xl xl:text-8xl">
           Discover Your
           <br />
           Next Adventure
@@ -62,7 +54,7 @@ export function Banner() {
         {searchFields.map((field, index) => (
           <label
             key={field.label}
-            className={`flex h-[70px] flex-col justify-center gap-0.5 border-b border-white/15 px-6 py-3.5 lg:border-b-0 ${
+            className={`flex h-17.5 flex-col justify-center gap-0.5 border-b border-white/15 px-6 py-3.5 lg:border-b-0 ${
               index > 0 ? "lg:border-l" : ""
             }`}
           >
@@ -78,7 +70,7 @@ export function Banner() {
         ))}
         <button
           type="submit"
-          className="h-[70px] bg-brand px-12 text-lg font-semibold text-white transition-colors hover:bg-brand-dark sm:col-span-2 lg:col-span-1 lg:border-l lg:border-white/15"
+          className="h-17.5 bg-brand px-12 text-lg font-semibold text-white transition-colors hover:bg-brand-dark sm:col-span-2 lg:col-span-1 lg:border-l lg:border-white/15"
         >
           Search
         </button>
