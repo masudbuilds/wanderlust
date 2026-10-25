@@ -57,7 +57,7 @@ export default function AddDestinationPage() {
         return;
       }
 
-      // router.push("/");
+      router.push("/destinations");
     } catch (error) {
       console.error("Failed to add travel package:", error);
     }
