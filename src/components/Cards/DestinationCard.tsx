@@ -43,7 +43,7 @@ export function DestinationCard({ destination }: { destination: Destination }) {
       </p>
 
       <Link
-        href="#"
+        href={`/destinations/${destination.id}`}
         className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-brand underline underline-offset-2 transition-colors hover:text-brand-dark"
       >
         Book Now
