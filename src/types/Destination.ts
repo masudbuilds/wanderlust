@@ -7,6 +7,6 @@ export type Destination = {
   duration: string;
   departureDate: string;
   imageUrl: string;
-  rating: number;
+  rating?: number;
   description: string;
 };

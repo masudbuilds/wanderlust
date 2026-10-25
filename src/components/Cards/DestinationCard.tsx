@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight, Calendar, MapPin, Star } from "lucide-react";
-import { Destination } from "@/types/Destination";
+import type { Destination } from "@/types/Destination";
 
 export function DestinationCard({ destination }: { destination: Destination }) {
   return (
@@ -16,10 +16,12 @@ export function DestinationCard({ destination }: { destination: Destination }) {
           sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
           className="object-cover"
         />
-        <span className="absolute top-3 right-3 flex items-center gap-1 rounded-md bg-white/85 px-2 py-1 text-xs font-semibold text-foreground backdrop-blur-sm">
-          {destination.rating.toFixed(1)}
-          <Star className="size-3.5 fill-current" aria-hidden="true" />
-        </span>
+        {destination.rating !== undefined ? (
+          <span className="absolute top-3 right-3 flex items-center gap-1 rounded-md bg-white/85 px-2 py-1 text-xs font-semibold text-foreground backdrop-blur-sm">
+            {destination.rating.toFixed(1)}
+            <Star className="size-3.5 fill-current" aria-hidden="true" />
+          </span>
+        ) : null}
       </div>
 
       <div className="mt-3 flex items-center gap-1.5 text-sm text-muted-foreground">
