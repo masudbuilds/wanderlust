@@ -69,7 +69,7 @@ export default async function DestinationDetailPage({
 
         <div className="flex items-center gap-3">
           <EditDestinationDialog destination={destination} destinationId={id} />
-          <DeleteDestinationDialog />
+          <DeleteDestinationDialog destinationId={id} />
         </div>
       </div>
 

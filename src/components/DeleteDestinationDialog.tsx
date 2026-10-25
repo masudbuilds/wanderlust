@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -9,11 +12,46 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Button } from "./ui/button";
+import { useRouter } from "next/navigation";
 import { Trash2 } from "lucide-react";
-const DeleteDestinationDialog = () => {
+import { Button } from "@/components/ui/button";
+
+const DeleteDestinationDialog = ({
+  destinationId,
+}: {
+  destinationId: string;
+}) => {
+  const router = useRouter();
+  const [open, setOpen] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function handleDeleteDestination() {
+    setDeleting(true);
+    setError(null);
+
+    try {
+      const res = await fetch(
+        `http://localhost:5000/destinations/${encodeURIComponent(destinationId)}`,
+        { method: "DELETE" },
+      );
+
+      if (!res.ok) {
+        throw new Error(`Destination deletion failed with status ${res.status}`);
+      }
+
+      setOpen(false);
+      router.replace("/destinations");
+    } catch (error) {
+      console.error("Failed to delete destination:", error);
+      setError("Could not delete this destination. Please try again.");
+    } finally {
+      setDeleting(false);
+    }
+  }
+
   return (
-    <AlertDialog>
+    <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger
         render={
           <Button
@@ -26,19 +64,31 @@ const DeleteDestinationDialog = () => {
           </Button>
         }
       >
-        Show Dialog
+        Delete
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+          <AlertDialogTitle>Delete this destination?</AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone. This will permanently delete your
-            account from our servers.
+            This action cannot be undone. The destination will be permanently
+            removed.
           </AlertDialogDescription>
+          {error ? (
+            <p role="alert" className="text-sm text-destructive">
+              {error}
+            </p>
+          ) : null}
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction>Continue</AlertDialogAction>
+          <AlertDialogCancel disabled={deleting}>Cancel</AlertDialogCancel>
+          <AlertDialogAction
+            type="button"
+            disabled={deleting}
+            onClick={handleDeleteDestination}
+            className="bg-destructive text-white hover:bg-destructive/90"
+          >
+            {deleting ? "Deleting..." : "Delete destination"}
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
