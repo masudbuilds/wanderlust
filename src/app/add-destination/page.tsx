@@ -28,24 +28,39 @@ const CATEGORIES = [
 export default function AddDestinationPage() {
   const router = useRouter();
 
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    const data = new FormData(event.currentTarget);
-    const newPackage = {
-      name: data.get("name"),
-      country: data.get("country"),
-      category: data.get("category"),
-      price: data.get("price"),
-      duration: data.get("duration"),
-      departureDate: data.get("departureDate"),
-      imageUrl: data.get("imageUrl"),
-      description: data.get("description"),
+    const formData = new FormData(event.currentTarget);
+    const payload = {
+      name: formData.get("name"),
+      country: formData.get("country"),
+      category: formData.get("category"),
+      price: Number(formData.get("price")),
+      duration: formData.get("duration"),
+      departureDate: formData.get("departureDate"),
+      imageUrl: formData.get("imageUrl"),
+      description: formData.get("description"),
     };
-    console.log("New travel package:", newPackage);
 
-    // Fake submit for now — redirect to home.
-    router.push("/");
+    try {
+      const res = await fetch("http://localhost:5000/add-destination", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) {
+        console.error("Failed to add travel package:", res.status);
+        return;
+      }
+
+      // router.push("/");
+    } catch (error) {
+      console.error("Failed to add travel package:", error);
+    }
   }
 
   return (
@@ -54,7 +69,7 @@ export default function AddDestinationPage() {
         Add New Travel Package
       </h1>
 
-      <Card className="mx-auto mt-10 w-full max-w-lg">
+      <Card className="mx-auto mt-10 w-full max-w-lg py-0!">
         <CardContent className="px-6 py-6">
           <form
             onSubmit={handleSubmit}
@@ -84,19 +99,13 @@ export default function AddDestinationPage() {
 
             <div className="flex flex-col gap-1.5">
               <Label htmlFor="category">Category</Label>
-              <Select name="category" defaultValue="beach" required>
-                <SelectTrigger
-                  id="category"
-                  className="h-9! w-full! bg-muted!"
-                >
+              <Select name="category" defaultValue="Beach" required>
+                <SelectTrigger id="category" className="h-9! w-full! bg-muted!">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
                   {CATEGORIES.map((category) => (
-                    <SelectItem
-                      key={category}
-                      value={category.toLowerCase()}
-                    >
+                    <SelectItem key={category} value={category}>
                       {category}
                     </SelectItem>
                   ))}
