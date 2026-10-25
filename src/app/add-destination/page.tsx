@@ -101,16 +101,16 @@ export default function AddDestinationPage() {
                 id="country"
                 name="country"
                 required
-                defaultValue="Indonesia"
+                placeholder="Enter a country"
                 className="h-9! bg-muted!"
               />
             </div>
 
             <div className="flex flex-col gap-1.5">
               <Label htmlFor="category">Category</Label>
-              <Select name="category" defaultValue="Beach" required>
+              <Select name="category" required>
                 <SelectTrigger id="category" className="h-9! w-full! bg-muted!">
-                  <SelectValue />
+                  <SelectValue placeholder="Choose a category" />
                 </SelectTrigger>
                 <SelectContent>
                   {CATEGORIES.map((category) => (
