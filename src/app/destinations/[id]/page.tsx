@@ -7,13 +7,13 @@ import {
   Calendar,
   Check,
   MapPin,
-  SquarePen,
   Star,
   Trash2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { type Destination } from "@/types/Destination";
+import EditDestinationDialog from "@/components/EditDestinationDialog";
 
 // Your backend — adjust if the endpoint differs.
 const API_URL = "http://localhost:5000/destinations";
@@ -68,10 +68,7 @@ export default async function DestinationDetailPage({
         </Link>
 
         <div className="flex items-center gap-3">
-          <Button variant="outline" className="gap-2" type="button">
-            <SquarePen className="size-4" aria-hidden="true" />
-            Edit
-          </Button>
+          <EditDestinationDialog destination={destination} />
           <Button
             variant="outline"
             className="border-destructive/40! gap-2 text-destructive! hover:text-destructive!"
