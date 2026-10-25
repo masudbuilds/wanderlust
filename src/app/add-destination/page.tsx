@@ -1,7 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Save, Trash2 } from "lucide-react";
+import { Save } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -27,21 +28,27 @@ const CATEGORIES = [
 
 export default function AddDestinationPage() {
   const router = useRouter();
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (submitting) return;
 
     const formData = new FormData(event.currentTarget);
     const payload = {
-      name: formData.get("name"),
-      country: formData.get("country"),
-      category: formData.get("category"),
+      name: String(formData.get("name") ?? "").trim(),
+      country: String(formData.get("country") ?? "").trim(),
+      category: String(formData.get("category") ?? ""),
       price: Number(formData.get("price")),
-      duration: formData.get("duration"),
-      departureDate: formData.get("departureDate"),
-      imageUrl: formData.get("imageUrl"),
-      description: formData.get("description"),
+      duration: String(formData.get("duration") ?? "").trim(),
+      departureDate: String(formData.get("departureDate") ?? ""),
+      imageUrl: String(formData.get("imageUrl") ?? "").trim(),
+      description: String(formData.get("description") ?? "").trim(),
     };
+
+    setSubmitting(true);
+    setError(null);
 
     try {
       const res = await fetch("http://localhost:5000/add-destination", {
@@ -53,13 +60,15 @@ export default function AddDestinationPage() {
       });
 
       if (!res.ok) {
-        console.error("Failed to add travel package:", res.status);
-        return;
+        throw new Error(`Destination creation failed with status ${res.status}`);
       }
 
       router.push("/destinations");
     } catch (error) {
       console.error("Failed to add travel package:", error);
+      setError("Could not add this destination. Please try again.");
+    } finally {
+      setSubmitting(false);
     }
   }
 
@@ -131,6 +140,7 @@ export default function AddDestinationPage() {
               <Input
                 id="duration"
                 name="duration"
+                required
                 placeholder="e.g., 7 Days/6 Nights"
                 className="h-9! bg-muted!"
               />
@@ -169,22 +179,19 @@ export default function AddDestinationPage() {
               />
             </div>
 
-            <div className="mt-2 flex items-center justify-end gap-3 sm:col-span-2">
-              <Button
-                type="button"
-                variant="outline"
-                className="border-destructive/40! gap-2 text-destructive! hover:text-destructive!"
-                onClick={() => router.push("/")}
-              >
-                <Trash2 className="size-4" />
-                Cancel
-              </Button>
+            <div className="mt-2 flex flex-col justify-end gap-3 sm:col-span-2">
+              {error ? (
+                <p role="alert" className="text-sm text-destructive">
+                  {error}
+                </p>
+              ) : null}
               <Button
                 type="submit"
+                disabled={submitting}
                 className="bg-brand! gap-2 text-white! hover:bg-brand-dark!"
               >
                 <Save className="size-4" />
-                Add Travel Package
+                {submitting ? "Adding..." : "Add Travel Package"}
               </Button>
             </div>
           </form>
