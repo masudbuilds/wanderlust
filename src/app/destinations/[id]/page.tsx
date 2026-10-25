@@ -12,8 +12,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { type Destination } from "@/types/Destination";
-import EditDestinationDialog from "@/components/EditDestinationDialog";
-import DeleteDestinationDialog from "@/components/DeleteDestinationDialog";
+import EditDestinationDialog from "@/components/destination/EditDestinationDialog";
+import DeleteDestinationDialog from "@/components/destination/DeleteDestinationDialog";
 
 // Your backend — adjust if the endpoint differs.
 const API_URL = "http://localhost:5000/destinations";
