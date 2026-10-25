@@ -68,7 +68,7 @@ export default async function DestinationDetailPage({
         </Link>
 
         <div className="flex items-center gap-3">
-          <EditDestinationDialog destination={destination} />
+          <EditDestinationDialog destination={destination} destinationId={id} />
           <Button
             variant="outline"
             className="border-destructive/40! gap-2 text-destructive! hover:text-destructive!"

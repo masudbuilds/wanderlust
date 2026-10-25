@@ -38,8 +38,10 @@ const CATEGORIES = [
 
 const EditDestinationDialog = ({
   destination,
+  destinationId,
 }: {
   destination: Destination;
+  destinationId: string;
 }) => {
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -68,9 +70,9 @@ const EditDestinationDialog = ({
 
     try {
       const res = await fetch(
-        `http://localhost:5000/destinations/${encodeURIComponent(destination.id)}`,
+        `http://localhost:5000/destinations/${encodeURIComponent(destinationId)}`,
         {
-          method: "PUT",
+          method: "PATCH",
           headers: {
             "Content-Type": "application/json",
           },
@@ -228,11 +230,7 @@ const EditDestinationDialog = ({
               <div className="mt-2 flex items-center justify-end gap-3 sm:col-span-2">
                 <DialogClose
                   render={
-                    <Button
-                      type="button"
-                      variant="outline"
-                      disabled={saving}
-                    />
+                    <Button type="button" variant="outline" disabled={saving} />
                   }
                 >
                   Cancel
