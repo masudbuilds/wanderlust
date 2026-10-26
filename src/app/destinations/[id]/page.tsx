@@ -1,19 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import {
-  ArrowLeft,
-  ArrowRight,
-  Calendar,
-  Check,
-  MapPin,
-  Star,
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { ArrowLeft, Calendar, Check, MapPin, Star } from "lucide-react";
 import { type Destination } from "@/types/Destination";
 import EditDestinationDialog from "@/components/destination/EditDestinationDialog";
 import DeleteDestinationDialog from "@/components/destination/DeleteDestinationDialog";
+import BookingCard from "@/components/booking/BookingCard";
 
 // Your backend — adjust if the endpoint differs.
 const API_URL = "http://localhost:5000/destinations";
@@ -47,13 +39,6 @@ export default async function DestinationDetailPage({
   const highlights = Array.isArray(destination.highlights)
     ? destination.highlights
     : [];
-
-  // Booking side card; mocked copies while no booking flow exists yet.
-  const perks = [
-    "Free cancellation up to 7 days",
-    "Travel insurance included",
-    "24/7 customer support",
-  ];
 
   return (
     <main className="mx-auto w-full max-w-5xl px-6 py-6 md:px-10 md:py-8">
@@ -153,43 +138,7 @@ export default async function DestinationDetailPage({
         </div>
 
         {/* Booking card, stuck under the sticky navbar on desktop */}
-        <aside className="self-start rounded-xl border border-border bg-white p-5 lg:sticky lg:top-24">
-          <p className="text-sm text-muted-foreground">Starting from</p>
-          <p className="mt-1 text-3xl font-bold text-brand">
-            ${destination.price}
-          </p>
-          <p className="mt-1 text-xs text-muted-foreground">per person</p>
-
-          <Input
-            type="date"
-            defaultValue={destination.departureDate}
-            aria-label="Departure date"
-            className="mt-4 h-9! bg-muted!"
-          />
-
-          <Button
-            type="button"
-            className="mt-4 h-10 w-full bg-brand! text-white! hover:bg-brand-dark!"
-          >
-            Book Now
-            <ArrowRight className="size-4" aria-hidden="true" />
-          </Button>
-
-          <ul className="mt-4 space-y-2">
-            {perks.map((perk) => (
-              <li
-                key={perk}
-                className="flex items-center gap-2 text-sm text-muted-foreground"
-              >
-                <Check
-                  className="size-4 shrink-0 text-green-600"
-                  aria-hidden="true"
-                />
-                {perk}
-              </li>
-            ))}
-          </ul>
-        </aside>
+        <BookingCard destination={destination} />
       </div>
     </main>
   );
