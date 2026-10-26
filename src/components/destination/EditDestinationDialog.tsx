@@ -99,11 +99,11 @@ const EditDestinationDialog = ({
   return (
     <div>
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger>
-          <Button variant="outline" className="gap-2" type="button">
-            <SquarePen className="size-4" aria-hidden="true" />
-            Edit
-          </Button>
+        <DialogTrigger
+          render={<Button variant="outline" className="gap-2" type="button" />}
+        >
+          <SquarePen className="size-4" aria-hidden="true" />
+          Edit
         </DialogTrigger>
         <DialogContent className="mx-auto mt-10 w-full max-w-lg">
           <DialogHeader>

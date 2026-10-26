@@ -11,7 +11,6 @@ const BookingsPage = async () => {
 
   const res = await fetch(`http://localhost:5000/bookings/${user?.email}`);
   const bookings = (await res.json()) as Booking[];
-  console.log("data", bookings);
   return (
     <main className="mx-auto w-full max-w-5xl px-6 py-12 md:px-10">
       <h1 className="font-display text-4xl font-medium md:text-5xl">

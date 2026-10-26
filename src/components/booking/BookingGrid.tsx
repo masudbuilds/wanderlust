@@ -1,3 +1,5 @@
+"use client";
+import { useState } from "react";
 import Image from "next/image";
 import {
   Bookmark,
@@ -9,6 +11,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { type Booking } from "@/types/Booking";
+import { useRouter } from "next/navigation";
 
 function formatDeparture(departureDate: string) {
   const date = new Date(departureDate);
@@ -63,7 +66,38 @@ function StatusBadge({ status }: { status?: string | null }) {
 }
 
 function BookingCard({ booking }: { booking: Booking }) {
+  const router = useRouter();
+  const [canceling, setCanceling] = useState(false);
+  const [cancelError, setCancelError] = useState<string | null>(null);
   const bookingId = booking.id ?? booking._id;
+
+  const handleCancelBooking = async () => {
+    if (!bookingId) {
+      setCancelError("This booking cannot be cancelled because its ID is missing.");
+      return;
+    }
+
+    setCanceling(true);
+    setCancelError(null);
+
+    try {
+      const res = await fetch(
+        `http://localhost:5000/bookings/${encodeURIComponent(bookingId)}`,
+        { method: "DELETE" },
+      );
+
+      if (!res.ok) {
+        throw new Error(`Booking cancellation failed with status ${res.status}`);
+      }
+
+      router.refresh();
+    } catch (error) {
+      console.error("Failed to cancel booking:", error);
+      setCancelError("Could not cancel this booking. Please try again.");
+    } finally {
+      setCanceling(false);
+    }
+  };
 
   return (
     <article className="flex flex-col gap-4 rounded-xl border border-border bg-white p-4 shadow-xs md:flex-row md:items-center">
@@ -96,32 +130,37 @@ function BookingCard({ booking }: { booking: Booking }) {
       </div>
 
       {/* Static placeholders — wire confirmation actions later. */}
-      <div className="flex shrink-0 items-center justify-end gap-3 self-end md:self-center">
-        <Button
-          type="button"
-          variant="outline"
-          className="border-destructive/40! gap-2 text-destructive! hover:text-destructive!"
-        >
-          <Trash2 className="size-4" aria-hidden="true" />
-          Cancel
-        </Button>
-        <Button
-          type="button"
-          className="gap-2 bg-brand! text-white! hover:bg-brand-dark!"
-        >
-          <Eye className="size-4" aria-hidden="true" />
-          View
-        </Button>
+      <div className="flex shrink-0 flex-col items-end gap-2 self-end md:self-center">
+        <div className="flex items-center justify-end gap-3">
+          <Button
+            type="button"
+            onClick={handleCancelBooking}
+            disabled={canceling}
+            variant="outline"
+            className="border-destructive/40! gap-2 text-destructive! hover:text-destructive!"
+          >
+            <Trash2 className="size-4" aria-hidden="true" />
+            {canceling ? "Cancelling..." : "Cancel"}
+          </Button>
+          <Button
+            type="button"
+            className="gap-2 bg-brand! text-white! hover:bg-brand-dark!"
+          >
+            <Eye className="size-4" aria-hidden="true" />
+            View
+          </Button>
+        </div>
+        {cancelError ? (
+          <p role="alert" className="max-w-60 text-right text-sm text-destructive">
+            {cancelError}
+          </p>
+        ) : null}
       </div>
     </article>
   );
 }
 
-export default function BookingGrid({
-  bookings,
-}: {
-  bookings: Booking[];
-}) {
+export default function BookingGrid({ bookings }: { bookings: Booking[] }) {
   if (!Array.isArray(bookings) || bookings.length === 0) {
     return (
       <p className="text-sm text-muted-foreground">
