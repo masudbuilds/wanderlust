@@ -5,6 +5,17 @@ import Image from "next/image";
 import { useState } from "react";
 import { Menu, User, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { authClient } from "@/lib/auth-client";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverDescription,
+  PopoverHeader,
+  PopoverTitle,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Button } from "./ui/button";
 
 const navLinks = [
   { label: "Home", href: "/", active: true },
@@ -19,7 +30,46 @@ const actionLinks = [
   { label: "Sign Up", href: "/sign-up" },
 ];
 
+type NavbarUser = {
+  name: string;
+  email: string;
+  image?: string | null;
+};
+
+function UserAccountMenu({ user }: { user: NavbarUser }) {
+  return (
+    <Popover>
+      <PopoverTrigger
+        aria-label="Open account menu"
+        className="inline-flex rounded-full border-0 bg-transparent p-0 outline-none focus-visible:ring-2 focus-visible:ring-brand"
+      >
+        <Avatar>
+          <AvatarImage
+            referrerPolicy="no-referrer"
+            src={user.image ?? undefined}
+          />
+          <AvatarFallback>
+            {user.name.charAt(0).toUpperCase() ||
+              user.email.charAt(0).toUpperCase()}
+          </AvatarFallback>
+        </Avatar>
+      </PopoverTrigger>
+      <PopoverContent>
+        <PopoverHeader>
+          <PopoverTitle>{user.name}</PopoverTitle>
+          <PopoverDescription>{user.email}</PopoverDescription>
+        </PopoverHeader>
+        <Button onClick={() => authClient.signOut()} variant="destructive">
+          Sign Out
+        </Button>
+      </PopoverContent>
+    </Popover>
+  );
+}
+
 export function Navbar() {
+  const { data: session } = authClient.useSession();
+  const user = session?.user;
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
@@ -71,17 +121,23 @@ export function Navbar() {
 
         {/* Right actions */}
         <ul className="hidden items-center gap-8 justify-self-end lg:flex">
-          {actionLinks.map((link) => (
-            <li key={link.label}>
-              <Link
-                href={link.href}
-                className="flex items-center gap-1.5 text-[15px] text-foreground transition-colors hover:text-brand"
-              >
-                {link.icon ? <link.icon className="size-4.5" /> : null}
-                {link.label}
-              </Link>
+          {user ? (
+            <li>
+              <UserAccountMenu user={user} />
             </li>
-          ))}
+          ) : (
+            actionLinks.map((link) => (
+              <li key={link.label}>
+                <Link
+                  href={link.href}
+                  className="flex items-center gap-1.5 text-[15px] text-foreground transition-colors hover:text-brand"
+                >
+                  {link.icon ? <link.icon className="size-4.5" /> : null}
+                  {link.label}
+                </Link>
+              </li>
+            ))
+          )}
         </ul>
       </nav>
 
@@ -106,18 +162,24 @@ export function Navbar() {
                 </li>
               ))}
             </ul>
-            <div className="border-t border-border py-2">
-              {actionLinks.map((link) => (
-                <Link
-                  key={link.label}
-                  href={link.href}
-                  className="flex items-center gap-2 py-2.5 text-[15px] text-foreground"
-                >
-                  {link.icon ? <link.icon className="size-4.5" /> : null}
-                  {link.label}
-                </Link>
-              ))}
-            </div>
+            {user ? (
+              <div className="border-t border-border py-2">
+                <UserAccountMenu user={user} />
+              </div>
+            ) : (
+              <div className="border-t border-border py-2">
+                {actionLinks.map((link) => (
+                  <Link
+                    key={link.label}
+                    href={link.href}
+                    className="flex items-center gap-2 py-2.5 text-[15px] text-foreground"
+                  >
+                    {link.icon ? <link.icon className="size-4.5" /> : null}
+                    {link.label}
+                  </Link>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       ) : null}
