@@ -12,6 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { type Booking } from "@/types/Booking";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 function formatDeparture(departureDate: string) {
   const date = new Date(departureDate);
@@ -73,7 +74,9 @@ function BookingCard({ booking }: { booking: Booking }) {
 
   const handleCancelBooking = async () => {
     if (!bookingId) {
-      setCancelError("This booking cannot be cancelled because its ID is missing.");
+      setCancelError(
+        "This booking cannot be cancelled because its ID is missing.",
+      );
       return;
     }
 
@@ -87,7 +90,9 @@ function BookingCard({ booking }: { booking: Booking }) {
       );
 
       if (!res.ok) {
-        throw new Error(`Booking cancellation failed with status ${res.status}`);
+        throw new Error(
+          `Booking cancellation failed with status ${res.status}`,
+        );
       }
 
       router.refresh();
@@ -142,16 +147,21 @@ function BookingCard({ booking }: { booking: Booking }) {
             <Trash2 className="size-4" aria-hidden="true" />
             {canceling ? "Cancelling..." : "Cancel"}
           </Button>
-          <Button
-            type="button"
-            className="gap-2 bg-brand! text-white! hover:bg-brand-dark!"
-          >
-            <Eye className="size-4" aria-hidden="true" />
-            View
-          </Button>
+          <Link href={`/destinations/${booking._id}`}>
+            <Button
+              type="button"
+              className="gap-2 bg-brand! text-white! hover:bg-brand-dark!"
+            >
+              <Eye className="size-4" aria-hidden="true" />
+              View
+            </Button>
+          </Link>
         </div>
         {cancelError ? (
-          <p role="alert" className="max-w-60 text-right text-sm text-destructive">
+          <p
+            role="alert"
+            className="max-w-60 text-right text-sm text-destructive"
+          >
             {cancelError}
           </p>
         ) : null}

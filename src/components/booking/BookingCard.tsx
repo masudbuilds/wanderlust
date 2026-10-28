@@ -1,37 +1,77 @@
 "use client";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth-client";
-import { Destination } from "@/types/Destination";
+import type { Destination } from "@/types/Destination";
 import { ArrowRight, Check } from "lucide-react";
 
+function formatDateInput(value: string) {
+  const dateOnly = /^(\d{4}-\d{2}-\d{2})/.exec(value)?.[1];
+  if (dateOnly) {
+    return dateOnly;
+  }
+
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? "" : date.toISOString().slice(0, 10);
+}
+
 const BookingCard = ({ destination }: { destination: Destination }) => {
+  const router = useRouter();
   const { data: session } = authClient.useSession();
   const user = session?.user;
+  const [submitting, setSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const handleBooking = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const departureDate = e.target.departureDate.value;
+    if (submitting) return;
 
-    const data = {
-      username: user?.name,
-      email: user?.email,
-      image: user?.image,
-      ...destination,
-      departureDate: departureDate,
-      bookingDate: new Date(),
-    };
+    if (!user?.email) {
+      setErrorMessage("Please sign in before booking this trip.");
+      return;
+    }
 
-    const res = await fetch("http://localhost:5000/bookings", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
+    const formData = new FormData(e.currentTarget);
+    const departureDate = String(formData.get("departureDate") ?? "");
 
-    const bookingData = await res.json();
-    console.log(bookingData);
+    if (!departureDate) {
+      setErrorMessage("Choose a departure date before booking.");
+      return;
+    }
+
+    setSubmitting(true);
+    setErrorMessage(null);
+
+    try {
+      const res = await fetch("http://localhost:5000/bookings", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...destination,
+          username: user.name,
+          email: user.email,
+          image: user.image,
+          departureDate,
+          bookingDate: new Date().toISOString(),
+        }),
+      });
+
+      if (!res.ok) {
+        throw new Error(`Booking creation failed with status ${res.status}`);
+      }
+
+      router.push("/bookings");
+    } catch (error) {
+      console.error("Failed to create booking:", error);
+      setErrorMessage("Could not complete this booking. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const perks = [
@@ -52,18 +92,30 @@ const BookingCard = ({ destination }: { destination: Destination }) => {
           <Input
             type="date"
             name="departureDate"
-            defaultValue={destination.departureDate}
+            defaultValue={formatDateInput(destination.departureDate)}
+            required
             aria-label="Departure date"
             className="mt-4 h-9! bg-muted!"
           />
 
           <Button
             type="submit"
+            disabled={submitting}
             className="mt-4 h-10 w-full bg-brand! text-white! hover:bg-brand-dark!"
           >
-            Book Now
+            {submitting ? "Booking..." : "Book Now"}
             <ArrowRight className="size-4" aria-hidden="true" />
           </Button>
+          {errorMessage ? (
+            <p className="mt-3 text-sm text-destructive" role="alert">
+              {errorMessage}{" "}
+              {!user?.email ? (
+                <Link href="/login" className="font-medium underline">
+                  Sign in
+                </Link>
+              ) : null}
+            </p>
+          ) : null}
         </form>
 
         <ul className="mt-4 space-y-2">
