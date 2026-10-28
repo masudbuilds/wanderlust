@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { type Booking } from "@/types/Booking";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { getTokenFromClient } from "@/lib/getTokenFromClient";
 
 function formatDeparture(departureDate: string) {
   const date = new Date(departureDate);
@@ -73,6 +74,7 @@ function BookingCard({ booking }: { booking: Booking }) {
   const bookingId = booking.id ?? booking._id;
 
   const handleCancelBooking = async () => {
+    const token = await getTokenFromClient();
     if (!bookingId) {
       setCancelError(
         "This booking cannot be cancelled because its ID is missing.",
@@ -86,7 +88,12 @@ function BookingCard({ booking }: { booking: Booking }) {
     try {
       const res = await fetch(
         `http://localhost:5000/bookings/${encodeURIComponent(bookingId)}`,
-        { method: "DELETE" },
+        {
+          method: "DELETE",
+          headers: {
+            authorization: `Bearer ${token}`,
+          },
+        },
       );
 
       if (!res.ok) {

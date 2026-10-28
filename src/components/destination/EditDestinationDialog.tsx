@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import type { Destination } from "@/types/Destination";
+import { getTokenFromClient } from "@/lib/getTokenFromClient";
 
 const CATEGORIES = [
   "Beach",
@@ -50,6 +51,7 @@ const EditDestinationDialog = ({
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    const token = await getTokenFromClient();
     setSaving(true);
     setError(null);
 
@@ -75,6 +77,7 @@ const EditDestinationDialog = ({
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
+            authorization: `Bearer ${token}`,
           },
           body: JSON.stringify(payload),
         },

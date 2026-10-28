@@ -6,8 +6,7 @@ import { type Destination } from "@/types/Destination";
 import EditDestinationDialog from "@/components/destination/EditDestinationDialog";
 import DeleteDestinationDialog from "@/components/destination/DeleteDestinationDialog";
 import BookingCard from "@/components/booking/BookingCard";
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
+import { getTokenFromServer } from "@/lib/getTokenFromServer";
 
 // Your backend — adjust if the endpoint differs.
 const API_URL = "http://localhost:5000/destinations";
@@ -22,10 +21,7 @@ export default async function DestinationDetailPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const jwtToken = await auth.api.getToken({
-    headers: await headers(),
-  });
-  console.log(jwtToken?.token);
+  const token = await getTokenFromServer();
 
   const { id } = await params;
 
@@ -35,7 +31,7 @@ export default async function DestinationDetailPage({
     const res = await fetch(`${API_URL}/${id}`, {
       cache: "no-store",
       headers: {
-        authorization: `Bearer ${jwtToken?.token}`,
+        authorization: `Bearer ${token}`,
       },
     });
 

@@ -15,6 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import { getTokenFromClient } from "@/lib/getTokenFromClient";
 
 const CATEGORIES = [
   "Beach",
@@ -32,6 +33,7 @@ export default function AddDestinationPage() {
   const [error, setError] = useState<string | null>(null);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    const token = await getTokenFromClient();
     event.preventDefault();
     if (submitting) return;
 
@@ -55,12 +57,15 @@ export default function AddDestinationPage() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(payload),
       });
 
       if (!res.ok) {
-        throw new Error(`Destination creation failed with status ${res.status}`);
+        throw new Error(
+          `Destination creation failed with status ${res.status}`,
+        );
       }
 
       router.push("/destinations");
