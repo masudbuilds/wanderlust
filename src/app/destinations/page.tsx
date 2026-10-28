@@ -53,7 +53,9 @@ function parseDestination(value: unknown): Destination | null {
       typeof imageUrl === "string" && imageUrl.length > 0
         ? imageUrl
         : "/images/Banner.png",
-    ...(typeof rating === "number" && Number.isFinite(rating) ? { rating } : {}),
+    ...(typeof rating === "number" && Number.isFinite(rating)
+      ? { rating }
+      : {}),
     description,
   };
 }
@@ -82,7 +84,9 @@ export default function DestinationsPage() {
 
         const parsed = data
           .map(parseDestination)
-          .filter((destination): destination is Destination => destination !== null);
+          .filter(
+            (destination): destination is Destination => destination !== null,
+          );
 
         if (parsed.length !== data.length) {
           console.warn(
