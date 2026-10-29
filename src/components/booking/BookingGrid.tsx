@@ -87,7 +87,7 @@ function BookingCard({ booking }: { booking: Booking }) {
 
     try {
       const res = await fetch(
-        `http://localhost:5000/bookings/${encodeURIComponent(bookingId)}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/bookings/${encodeURIComponent(bookingId)}`,
         {
           method: "DELETE",
           headers: {

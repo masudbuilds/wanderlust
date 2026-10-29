@@ -5,7 +5,7 @@ import { DestinationCard } from "@/components/Cards/DestinationCard";
 import type { Destination } from "@/types/Destination";
 
 // Your backend — adjust if the endpoint differs.
-const API_URL = "http://localhost:5000/destinations";
+const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/destinations`;
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);

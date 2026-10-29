@@ -9,7 +9,7 @@ const BookingsPage = async () => {
   });
   const user = session?.user;
 
-  const res = await fetch(`http://localhost:5000/bookings/${user?.email}`);
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/${user?.email}`);
   const bookings = (await res.json()) as Booking[];
   return (
     <main className="mx-auto w-full max-w-5xl px-6 py-12 md:px-10">

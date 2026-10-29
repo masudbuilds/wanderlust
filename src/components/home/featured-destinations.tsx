@@ -151,7 +151,7 @@ const FeaturedDestination = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch("http://localhost:5000/featured-destinations")
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/featured-destinations`)
       .then((res) => {
         if (!res.ok) throw new Error("Failed to fetch destinations");
         return res.json();

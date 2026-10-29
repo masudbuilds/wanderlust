@@ -72,7 +72,7 @@ const EditDestinationDialog = ({
 
     try {
       const res = await fetch(
-        `http://localhost:5000/destinations/${encodeURIComponent(destinationId)}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/destinations/${encodeURIComponent(destinationId)}`,
         {
           method: "PATCH",
           headers: {

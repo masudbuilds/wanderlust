@@ -9,7 +9,7 @@ import BookingCard from "@/components/booking/BookingCard";
 import { getTokenFromServer } from "@/lib/getTokenFromServer";
 
 // Your backend — adjust if the endpoint differs.
-const API_URL = "http://localhost:5000/destinations";
+const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/destinations`;
 
 type DestinationDetail = Destination & {
   reviews?: number;

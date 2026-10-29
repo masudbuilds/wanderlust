@@ -32,12 +32,14 @@ const DeleteDestinationDialog = ({
 
     try {
       const res = await fetch(
-        `http://localhost:5000/destinations/${encodeURIComponent(destinationId)}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/destinations/${encodeURIComponent(destinationId)}`,
         { method: "DELETE" },
       );
 
       if (!res.ok) {
-        throw new Error(`Destination deletion failed with status ${res.status}`);
+        throw new Error(
+          `Destination deletion failed with status ${res.status}`,
+        );
       }
 
       setOpen(false);
