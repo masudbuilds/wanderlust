@@ -70,7 +70,9 @@ export default function DestinationsPage() {
 
     async function loadDestinations() {
       try {
-        const res = await fetch(API_URL);
+        const res = await fetch(API_URL, {
+          cache: "no-store",
+        });
 
         if (!res.ok) {
           throw new Error(`Destinations API returned HTTP ${res.status}`);
